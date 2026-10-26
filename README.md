@@ -4,6 +4,8 @@
 
 **A new perspective on decentralized finance.**
 
+[![Platform checks](https://github.com/fomolabs-v2/fomolabs-ecosystem/actions/workflows/ci.yml/badge.svg)](https://github.com/fomolabs-v2/fomolabs-ecosystem/actions/workflows/ci.yml)
+
 [Open FomoLabs](https://www.fomolabs.world) · [Trade on FOMO DEX](https://www.fomolabs.world/trade) · [FOMOLAUNCH — Coming Soon](https://www.fomolabs.world/launch)
 
 **Solana CA:** `DSEUEGxgDizLLLrVXmCqyAwD9GScpBsoH7HLmMYqfomo`
@@ -42,7 +44,7 @@ DEX Screener supplies real pool statistics, GeckoTerminal supplies candles and p
 
 Optional server environment variables are documented in `.env.example`. The app works with keyless Jupiter access (limited capacity) and public Solana mainnet RPC with a second public provider for failover. Before a high-traffic public launch, configure a dedicated `SOLANA_RPC_URL` and a server-only `JUPITER_API_KEY`. In-memory cache/rate controls apply per server instance; use provider-level limits and Vercel Firewall or a shared rate store for stronger cross-instance enforcement. Never put provider keys in `NEXT_PUBLIC_` variables.
 
-For Vercel, import this directory as its own Next.js project. Do not deploy the parent workspace. No database is required. All private environment files are excluded from source control and deployment uploads.
+The production Vercel project is connected to this repository, with `main` as the production branch and [www.fomolabs.world](https://www.fomolabs.world) as the public domain. Pushes to `main` trigger deployment. For a separate installation, import this directory as its own Next.js project and connect a private Vercel Blob store for swap reporting. Do not deploy the parent workspace. All private environment files are excluded from source control and deployment uploads.
 
 ## Mobile and PWA
 
@@ -76,6 +78,6 @@ Automated checks exercise amount limits, address validation, order expiry, payer
 
 TradingView Lightweight Charts™ — Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/. Apache-2.0. Chart attribution remains enabled. Inter is licensed under the SIL Open Font License; see `public/fonts/LICENSE.txt`. Logo supplied by the user.
 
-## Dependency review (26 October 2026)
+## Dependency review (27 October 2026)
 
-The dependency check reports zero high or critical advisories after updating Sharp and pinning the compatible UUID 11 release. Ten moderate reports remain through the Solana SDK's Jayson / stream-json dependency chain, including the added Coinbase adapter. The app imports Jayson's browser client; its streaming server parser is absent from the original Next.js API deployment traces. The app parses inbound requests with native JSON parsing and bounds transaction request sizes. A breaking parser override has deliberately not been forced. Reassess these upstream advisories and complete an independent review before a broad financial launch.
+The dependency check reports zero high or critical advisories after updating Sharp, pinning the compatible UUID 11 release, and updating the Blob CLI configuration dependency's Zod version. Ten moderate reports remain through the Solana SDK's Jayson / stream-json dependency chain, including the added Coinbase adapter. The app imports Jayson's browser client; its streaming server parser is absent from the original Next.js API deployment traces. The app parses inbound requests with native JSON parsing and bounds transaction request sizes. A breaking parser override has deliberately not been forced. Reassess these upstream advisories and complete an independent review before a broad financial launch.
