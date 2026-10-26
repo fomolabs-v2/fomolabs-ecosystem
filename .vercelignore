@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.env*
+!.env.example
+qa
+*.log
+*.tsbuildinfo
+public/brand/original-logo.png
