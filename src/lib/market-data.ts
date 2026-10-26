@@ -22,7 +22,7 @@ export async function searchTokens(query: string): Promise<Token[]> {
         name: t.name,
         symbol: t.symbol,
         decimals: t.decimals,
-        icon: t.icon,
+        icon: TOKENS.find((known) => known.address === t.id)?.icon || t.icon,
         verified: t.isVerified === true,
       }));
   });

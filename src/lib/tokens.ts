@@ -58,7 +58,7 @@ export const TOKENS: Token[] = [
     symbol: "LMAO!",
     name: "LMAO!",
     decimals: 6,
-    icon: "https://ipfs.io/ipfs/bafkreic2k6vq5rorto4kll3gtpux6yfllmioipbrt3uebwaovghmjajr5m",
+    icon: "https://cdn.dexscreener.com/cms/images/JndZ_JL2k9Bd0cS-?width=64&height=64&quality=90&format=webp",
   },
 ];
 export type Market = {
