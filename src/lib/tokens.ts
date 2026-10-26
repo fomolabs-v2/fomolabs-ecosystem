@@ -46,6 +46,20 @@ export const TOKENS: Token[] = [
     decimals: 5,
     verified: true,
   },
+  {
+    address: "Ai66LHZG9MCzg1WKdawwqduVAXpNDUuV8M3uyq5ppump",
+    symbol: "CATE",
+    name: "Cate",
+    decimals: 6,
+    icon: "https://cdn.dexscreener.com/cms/images/_aILGflqFiJQJ4A-?width=64&height=64&quality=90&format=webp",
+  },
+  {
+    address: "H74CYmXgMkYHYuSRsZt6RJb4NYp2u72Vw8BS5huApump",
+    symbol: "LMAO!",
+    name: "LMAO!",
+    decimals: 6,
+    icon: "https://ipfs.io/ipfs/bafkreic2k6vq5rorto4kll3gtpux6yfllmioipbrt3uebwaovghmjajr5m",
+  },
 ];
 export type Market = {
   token: Token;
