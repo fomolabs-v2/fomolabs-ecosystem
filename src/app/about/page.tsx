@@ -61,9 +61,29 @@ export default function About() {
         </p>
         <h2>FOMOLAUNCH status</h2>
         <p>
-          Token creation, launch management, liquidity integrations, and creator
-          tools are planned features. They are not released. No launch date is
-          promised, and this app accepts no launchpad deposits.
+          FOMOLAUNCH creates Solana tokens using Pump’s program and official SDK.
+          The creation transaction does not include an initial purchase. Network
+          fees and account rent are paid by the approving wallet. On-chain creation
+          is irreversible. Advanced scheduling and creator analytics remain planned.
+        </p>
+        <h2>Public profiles and callouts</h2>
+        <p>
+          Profiles, wallet addresses, callout text, promotion disclosures, token
+          metadata, and launch signatures are public. Each profile edit and post
+          requires a wallet message signature. Callouts require a positive,
+          unfrozen balance of the exact token, verified on Solana when posted.
+          “Held when posted” records that check; it is not proof of a current
+          holding, identity, token quality, or future returns. Authors can remove
+          their posts. Reports are retained privately for review and do not
+          automatically hide content.
+        </p>
+        <p>
+          Launch images and metadata are published when you approve the metadata
+          message, before any creation transaction. They are hosted by FomoLabs;
+          availability depends on this service. A public launch review ID is saved
+          on your device to recover confirmation status. Ephemeral mint keys stay
+          in browser memory and are never sent to FomoLabs. Signed transaction
+          messages are checked against the exact review before submission.
         </p>
         <h2>Open-source charting</h2>
         <p>

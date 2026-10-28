@@ -60,16 +60,16 @@ export default function Ecosystem() {
               <Rocket size={36} />
             </div>
             <div>
-              <span className="badge soon">Coming soon</span>
+              <LiveBadge>Open launchpad</LiveBadge>
               <h2>FOMOLAUNCH</h2>
               <p>
-                A dedicated launchpad experience for the next generation of
-                token creators.
+                Create tokens on Pump, build your public profile, and post
+                callouts for tokens you hold.
               </p>
               <div className="feature-pills">
                 <span>Token creation</span>
-                <span>Launch management</span>
-                <span>Creator tools</span>
+                <span>Holder callouts</span>
+                <span>Public profiles</span>
               </div>
             </div>
             <ArrowUpRight size={27} />

@@ -25,6 +25,7 @@ export function TokenPicker({
   return (
     <>
       <button
+        type="button"
         className={`token-selector ${expanded ? "expanded" : ""}`}
         aria-label={label}
         onClick={() => setOpen(true)}
@@ -53,6 +54,7 @@ export function TokenPicker({
         <div className="token-chips">
           {TOKENS.slice(0, 4).map((t) => (
             <button
+              type="button"
               key={t.address}
               onClick={() => {
                 onChange(t);
@@ -72,6 +74,7 @@ export function TokenPicker({
         <div className="token-results">
           {tokens.map((t) => (
             <button
+              type="button"
               key={t.address}
               className="token-result"
               onClick={() => {

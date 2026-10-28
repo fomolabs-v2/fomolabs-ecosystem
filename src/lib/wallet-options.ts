@@ -62,6 +62,13 @@ export function walletBrowseLink(
   const token = url.searchParams.get("token");
   if (token && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(token))
     safe.searchParams.set("token", token);
+  const tab = url.searchParams.get("tab");
+  if (
+    url.pathname === "/launch" &&
+    tab &&
+    ["explore", "callouts", "create"].includes(tab)
+  )
+    safe.searchParams.set("tab", tab);
   const target = encodeURIComponent(safe.href),
     ref = encodeURIComponent(url.origin);
   if (name === "Phantom")

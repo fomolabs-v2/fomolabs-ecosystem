@@ -1,9 +1,10 @@
 import {
-  BaseSignerWalletAdapter,
+  BaseMessageSignerWalletAdapter,
   WalletConnectionError,
   WalletNotConnectedError,
   WalletReadyState,
   WalletSignTransactionError,
+  WalletSignMessageError,
   scopePollingDetectionStrategy,
   type WalletName,
 } from "@solana/wallet-adapter-base";
@@ -15,6 +16,10 @@ import {
 } from "@solana/web3.js";
 
 export interface OkxSolanaProvider {
+  signMessage?(
+    message: Uint8Array,
+    display?: "utf8",
+  ): Promise<{ signature: Uint8Array }>;
   publicKey?: { toString(): string } | null;
   connect(): Promise<{ publicKey?: { toString(): string } }>;
   disconnect(): Promise<void>;
@@ -32,7 +37,7 @@ function injectedProvider(): OkxSolanaProvider | undefined {
 }
 
 /** Legacy injected OKX fallback. Wallet Standard discovery takes priority when registered. */
-export class OkxWalletAdapter extends BaseSignerWalletAdapter {
+export class OkxWalletAdapter extends BaseMessageSignerWalletAdapter {
   name = "OKX Wallet" as WalletName<"OKX Wallet">;
   url = "https://web3.okx.com/download";
   icon =
@@ -119,6 +124,26 @@ export class OkxWalletAdapter extends BaseSignerWalletAdapter {
     const provider = this.provider;
     this.clear();
     await provider?.disconnect();
+  }
+  async signMessage(message: Uint8Array): Promise<Uint8Array> {
+    if (!this.provider || !this.connected) throw new WalletNotConnectedError();
+    try {
+      if (!this.provider.signMessage)
+        throw new Error(
+          "This OKX version does not support message approval. Update your wallet.",
+        );
+      const result = await this.provider.signMessage(message, "utf8");
+      if (!result?.signature || result.signature.length !== 64)
+        throw new Error("OKX did not return a valid message signature.");
+      return new Uint8Array(result.signature);
+    } catch (error) {
+      const failure = new WalletSignMessageError(
+        error instanceof Error ? error.message : "Wallet approval cancelled",
+        error,
+      );
+      this.emit("error", failure);
+      throw failure;
+    }
   }
   async signTransaction<T extends Transaction | VersionedTransaction>(
     transaction: T,

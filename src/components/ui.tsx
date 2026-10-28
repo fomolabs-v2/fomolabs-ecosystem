@@ -66,6 +66,7 @@ export function ConnectButton({ compact = false }: { compact?: boolean }) {
   const { setVisible } = useWalletModal();
   return (
     <button
+      type="button"
       className={`button ${connected ? "secondary" : "primary"} wallet-button`}
       onClick={() => setVisible(true)}
       title={

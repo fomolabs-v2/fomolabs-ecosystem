@@ -21,7 +21,7 @@ import { InstallButton } from "./pwa";
 const links = [
   { href: "/", label: "Home" },
   { href: "/trade", label: "FOMO DEX" },
-  { href: "/launch", label: "FOMOLAUNCH", soon: true },
+  { href: "/launch", label: "FOMOLAUNCH", soon: false },
   { href: "/markets", label: "Markets" },
   { href: "/analytics", label: "Analytics" },
   { href: "/ecosystem", label: "Ecosystem" },
@@ -77,7 +77,7 @@ export function Header() {
               onClick={() => setMenu(false)}
             >
               {link.label}
-              {link.soon && <span className="badge soon">Coming soon</span>}
+              {link.soon && <span className="badge">Open launchpad</span>}
               <ArrowUpRight size={16} />
             </Link>
           ))}
@@ -85,6 +85,7 @@ export function Header() {
             Portfolio
             <Wallet size={16} />
           </Link>
+          <Link href="/profile" onClick={() => setMenu(false)}>Community profile<Wallet size={16}/></Link>
           <InstallButton />
         </nav>
       )}
@@ -164,11 +165,11 @@ export function TerminalSidebar() {
         <Link href="/launch" className="sidebar-launch">
           <Rocket size={24} />
           <strong>
-            Next up.
+            Create. Connect.
             <br />
             FOMOLAUNCH
           </strong>
-          <span className="badge soon">Coming soon</span>
+          <span className="badge">Open launchpad</span>
         </Link>
         <Link href="/ecosystem">
           <Layers size={17} /> Ecosystem <ArrowUpRight size={13} />

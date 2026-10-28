@@ -1,5 +1,6 @@
 import "server-only";
 import { cached, fetchJSON, jupiterHeaders } from "./server";
+import { readCommunity } from "./community-store";
 import {
   TOKENS,
   type Token,
@@ -10,11 +11,44 @@ import {
 export async function searchTokens(query: string): Promise<Token[]> {
   if (!query.trim()) return TOKENS;
   return cached(`tokens:${query.toLowerCase()}`, 120, async () => {
-    const tokens = await fetchJSON<any[]>(
-      `https://api.jup.ag/tokens/v2/search?query=${encodeURIComponent(query)}`,
-      { headers: jupiterHeaders() },
-    );
-    return tokens
+    // Confirmed local launches can be discovered before Jupiter indexes them.
+    // Storage outages must not disable unrelated token discovery.
+    const local = await cached("launch-token-directory", 15, async () => {
+      try {
+        return (await readCommunity()).launches.map(
+          (l) =>
+            ({
+              address: l.mint,
+              name: l.name,
+              symbol: l.symbol,
+              decimals: 6,
+              icon: l.image,
+              verified: false,
+            }) satisfies Token,
+        );
+      } catch {
+        return [] as Token[];
+      }
+    });
+    const matches = local
+      .filter(
+        (t) =>
+          t.address === query ||
+          t.name.toLowerCase().includes(query.toLowerCase()) ||
+          t.symbol.toLowerCase().includes(query.toLowerCase()),
+      )
+      .slice(0, 20);
+    let tokens: any[];
+    try {
+      tokens = await fetchJSON<any[]>(
+        `https://api.jup.ag/tokens/v2/search?query=${encodeURIComponent(query)}`,
+        { headers: jupiterHeaders() },
+      );
+    } catch (error) {
+      if (matches.length) return matches;
+      throw error;
+    }
+    const remote = tokens
       .slice(0, 20)
       .filter((t) => typeof t.id === "string" && Number.isInteger(t.decimals))
       .map((t) => ({
@@ -25,6 +59,10 @@ export async function searchTokens(query: string): Promise<Token[]> {
         icon: TOKENS.find((known) => known.address === t.id)?.icon || t.icon,
         verified: t.isVerified === true,
       }));
+    return [
+      ...matches,
+      ...remote.filter((t) => !matches.some((m) => m.address === t.address)),
+    ].slice(0, 20);
   });
 }
 export async function getToken(mint: string): Promise<Token> {
@@ -98,14 +136,12 @@ export async function getTrades(pool: string): Promise<PoolTrade[]> {
       `https://api.geckoterminal.com/api/v2/networks/solana/pools/${pool}/trades`,
       { headers: { Accept: "application/json;version=20230302" } },
     );
-    return (result.data || [])
-      .slice(0, 30)
-      .map((t: any) => ({
-        hash: t.attributes.tx_hash,
-        side: t.attributes.kind,
-        price: Number(t.attributes.price_to_in_usd),
-        volume: Number(t.attributes.volume_in_usd),
-        time: t.attributes.block_timestamp,
-      }));
+    return (result.data || []).slice(0, 30).map((t: any) => ({
+      hash: t.attributes.tx_hash,
+      side: t.attributes.kind,
+      price: Number(t.attributes.price_to_in_usd),
+      volume: Number(t.attributes.volume_in_usd),
+      time: t.attributes.block_timestamp,
+    }));
   });
 }

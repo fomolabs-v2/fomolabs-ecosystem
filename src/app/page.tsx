@@ -169,7 +169,7 @@ export default function Home() {
               <Link href="/launch" className="product-card launch-product">
                 <div className="product-top">
                   <span className="product-number">02 / CREATE</span>
-                  <span className="badge soon">Coming soon</span>
+                  <span className="badge">Create & connect</span>
                 </div>
                 <div className="product-body">
                   <div className="product-symbol purple">
@@ -179,13 +179,13 @@ export default function Home() {
                   <div>
                     <h3>FOMOLAUNCH</h3>
                     <p>
-                      Big ideas deserve a great beginning. The next chapter for
-                      token creators on Solana.
+                      Launch a Solana token. Build your profile. Share callouts
+                      backed by tokens you hold.
                     </p>
                   </div>
                 </div>
                 <div className="product-bottom">
-                  <span>Meet your future launchpad</span>
+                  <span>Open FOMOLAUNCH</span>
                   <span className="circle-arrow">
                     <ArrowUpRight size={19} />
                   </span>

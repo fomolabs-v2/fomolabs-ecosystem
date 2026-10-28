@@ -6,13 +6,13 @@
 
 [![Platform checks](https://github.com/fomolabs-v2/fomolabs-ecosystem/actions/workflows/ci.yml/badge.svg)](https://github.com/fomolabs-v2/fomolabs-ecosystem/actions/workflows/ci.yml)
 
-[Open FomoLabs](https://www.fomolabs.world) · [Trade on FOMO DEX](https://www.fomolabs.world/trade) · [FOMOLAUNCH — Coming Soon](https://www.fomolabs.world/launch)
+[Open FomoLabs](https://www.fomolabs.world) · [Trade on FOMO DEX](https://www.fomolabs.world/trade) · [Create & connect on FOMOLAUNCH](https://www.fomolabs.world/launch)
 
 **Solana CA:** `DSEUEGxgDizLLLrVXmCqyAwD9GScpBsoH7HLmMYqfomo`
 
 [View the token on Solscan](https://solscan.io/token/DSEUEGxgDizLLLrVXmCqyAwD9GScpBsoH7HLmMYqfomo)
 
-A responsive Solana ecosystem application built with Next.js App Router, TypeScript, Tailwind CSS, and TradingView Lightweight Charts. The supplied FomoLabs logo is used throughout. FOMOLAUNCH is explicitly marked Coming Soon.
+A responsive Solana ecosystem application built with Next.js App Router, TypeScript, Tailwind CSS, and TradingView Lightweight Charts. FOMOLAUNCH adds wallet-backed profiles, holder callouts, and token creation through Pump’s official SDK. Advanced scheduling and creator analytics remain planned.
 
 ## Run locally
 
@@ -30,7 +30,8 @@ Open http://localhost:4210. Use `npm run build` and `npm start` for the producti
 - `/markets`: Jupiter token discovery, locally saved watchlist, sortable market table.
 - `/analytics`: clearly scoped analytics across the selected tracked pools.
 - `/portfolio` and `/activity`: public wallet balances and recent on-chain transactions.
-- `/launch`: FOMOLAUNCH product vision with unreleased tools labeled as planned.
+- `/launch`: discovery, holder callouts (`?tab=callouts`), and token creation (`?tab=create`).
+- `/profile` and `/profile/[wallet]`: your connected profile and public wallet profiles.
 - `/ecosystem`: connected product navigation and the user-provided FOMO mint.
 - `/about`: privacy, market sources, fees, risk, and attribution.
 
@@ -74,10 +75,24 @@ Price-impact safeguards use the absolute magnitude of Jupiter's signed percentag
 
 Automated checks exercise amount limits, address validation, order expiry, payer matching, execution result handling, real icon dimensions, and service-worker handling of offline/API requests. Live read-only checks cover market endpoints and Jupiter quotes. Actual wallet signing and funded trade confirmation must be verified by the wallet owner. This code has not undergone an independent security audit.
 
+## FOMOLAUNCH
+
+Every profile mutation, callout, report, or deletion requires an Ed25519 wallet message approval. A server-issued five-minute challenge binds the canonical action, payload hash, wallet, origin, nonce, and expiry. Nonces are consumed atomically with the mutation using Blob ETag compare-and-swap; retries cannot publish the same action twice. Profile names are not unique verified identities; the wallet address is the identity. User text is rendered as text, and external profile links allow HTTPS only.
+
+Callouts require a public profile and a fresh server-side `getTokenAccountsByOwner` result at confirmed commitment for that exact mint. SPL and Token-2022 accounts are checked for owner, mint, program, state, and integer balance; frozen accounts do not qualify. Any positive amount qualifies. Client balances never authorize publication. The badge is explicitly historical: **held when posted**, with the check slot and timestamp retained. A sale after posting does not remove the historical post. Posting is limited to one per minute and ten per hour; promotion disclosure is required. Authors can remove their own posts. Signed reports are deduplicated in the private review queue; they do not automatically remove posts.
+
+The private Blob object `fomolaunch-v1/community.json` contains profiles, callouts, confirmed launches, consumed proofs, and reports. Preview runs use the separate `fomolaunch-preview-v1` prefix. The public API exposes only public fields. Operators review reports from the private Blob dashboard; there is no unauthenticated moderation endpoint. Current capacity guards are 5,000 profiles, 5,000 posts, and 2,000 launches. This is an initial bounded persistence design: migrate community data, moderation, and distributed rate limits to a transactional database before scaling beyond these limits. Server instance IP limits supplement wallet limits; they are not distributed DDoS protection. Expired proofs are pruned from the ledger on mutation; challenge files and approved metadata are retained in private storage. Public metadata may remain even when the user cancels creation, as disclosed before approval.
+
+Token creation uses `@pump-fun/pump-sdk` 4.3.1 `createV2Instruction`, with the connected wallet as creator/payer, a fresh browser-generated mint, SOL pairing, and both mayhem and holder-reward modes disabled. There is **no initial buy**. The official Pump program creates the Token-2022 mint and bonding curve. The mint key exists only in browser memory; no wallet keys or mint secrets are sent to the server. Metadata images are limited in size and decoded/re-encoded to WebP, with their SHA-256 bound to the metadata approval. Approved metadata is served on the canonical FomoLabs domain; hosting is not decentralized and must be maintained.
+
+Before approval, the server simulates the exact unsigned mainnet transaction, checks payer funds and returns a short-lived cost review. The browser verifies signer/program constraints and unchanged bytes after signing. The server checks both Ed25519 signatures against the exact stored message and expiry before broadcasting with preflight enabled. Network timeouts are treated as uncertain, not success. A stored public review ID lets the browser reconcile after a reload. Launch records appear only after a confirmed, successful Solana transaction matching both message and signature. New launches are searchable in the local token registry before Jupiter indexing; market/quote availability still depends on providers. Read-only mainnet simulation is verified; no funded launch was executed during implementation.
+
 ## Credits
 
 TradingView Lightweight Charts™ — Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/. Apache-2.0. Chart attribution remains enabled. Inter is licensed under the SIL Open Font License; see `public/fonts/LICENSE.txt`. Logo supplied by the user.
 
-## Dependency review (27 October 2026)
+## Dependency review (28 October 2026)
 
 The dependency check reports zero high or critical advisories after updating Sharp, pinning the compatible UUID 11 release, and updating the Blob CLI configuration dependency's Zod version. Ten moderate reports remain through the Solana SDK's Jayson / stream-json dependency chain, including the added Coinbase adapter. The app imports Jayson's browser client; its streaming server parser is absent from the original Next.js API deployment traces. The app parses inbound requests with native JSON parsing and bounds transaction request sizes. A breaking parser override has deliberately not been forced. Reassess these upstream advisories and complete an independent review before a broad financial launch.
+
+The Pump SDK’s Anchor TOML dependency is overridden to patched 5.0.1. The transitive `bigint-buffer` native addon is replaced with the small, tested, bounded pure-JavaScript compatibility package in `vendor/bigint-buffer` to eliminate its native buffer overflow path (GHSA-3gc7-fjrx-p6mg). It rejects negative values, invalid widths, and integer overflow. Keep the local package in source and deployment uploads. The dependency audit still reports the ten moderate upstream advisories noted above.

@@ -10,6 +10,7 @@
     "test": "tsx --test tests/*.test.ts tests/*.test.tsx"
   },
   "dependencies": {
+    "@pump-fun/pump-sdk": "4.3.1",
     "@radix-ui/react-dialog": "^1.1.15",
     "@solana/wallet-adapter-base": "^0.9.28",
     "@solana/wallet-adapter-coinbase": "^0.1.24",
@@ -43,7 +44,13 @@
   },
   "overrides": {
     "uuid": "11.1.1",
-    "@vercel/cli-config": { "zod": "4.6.6" }
+    "bigint-buffer": "file:./vendor/bigint-buffer",
+    "@coral-xyz/anchor": {
+      "toml": "5.0.1"
+    },
+    "@vercel/cli-config": {
+      "zod": "4.6.6"
+    }
   },
   "optionalDependencies": {
     "bufferutil": "4.1.0",

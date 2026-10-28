@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     template: "%s | FomoLabs",
   },
   description:
-    "Discover the FomoLabs ecosystem. Trade Solana tokens with FOMO DEX, explore live markets, and meet FOMOLAUNCH, our upcoming launchpad.",
+    "Trade Solana tokens with FOMO DEX. Create tokens, build your profile, and share holder callouts on FOMOLAUNCH.",
   applicationName: "FomoLabs",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -41,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body>
         <a className="skip-link" href="#main-content">
           Skip to content
